@@ -5,21 +5,21 @@ class OrderPay {
   double vat;
 
   /// numero de cuotas si es al contado(debit)/corriente(credito) colocar 0
-  int installments;
+  int? installments;
 
   /// colocar el tipo segundo el listado, obtenga el listado con PaymentezValidate.getInstallmentsType()
-  int installmentsType;
+  int? installmentsType;
 
-  double taxableAmount;
+  double? taxableAmount;
   int taxPercentage;
   OrderPay({
-    this.devReference,
-    this.amount,
-    this.description,
-    this.vat,
+    required this.devReference,
+    required this.amount,
+    required this.description,
+    required this.vat,
     this.installments,
     this.installmentsType,
     this.taxableAmount,
-    this.taxPercentage,
+    required this.taxPercentage,
   });
 }

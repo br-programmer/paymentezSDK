@@ -20,17 +20,18 @@ class Paymentez {
 
   Paymentez._();
   static Paymentez _instance = Paymentez._();
-  static PaymentezRepositoryInterface _paymentezRepositoryInterface;
+  static late PaymentezRepositoryInterface _paymentezRepositoryInterface;
 
-  static Paymentez instance({ConfigAuthorization configAuthorization}) {
+  static Paymentez instance(
+      {required ConfigAuthorization configAuthorization}) {
     _paymentezRepositoryInterface = _PaymentezServices(configAuthorization);
     return _instance;
   }
 
   Future<PaymentezResp> addCard({
-    UserPay user,
-    CardPay card,
-    String sessionId,
+    required UserPay user,
+    required CardPay card,
+    required String sessionId,
   }) async {
     return await _paymentezRepositoryInterface.addCard(
       user: user,
@@ -50,14 +51,16 @@ class Paymentez {
     );
   }
 
-  Future<PaymentezResp> infoTransaction(String userId, String transactionId) async {
+  Future<PaymentezResp> infoTransaction(
+      String userId, String transactionId) async {
     return await _paymentezRepositoryInterface.infoTransaction(
       userId: userId,
       transactionId: transactionId,
     );
   }
 
-  Future<PaymentezResp> verify(String userId, String transactionId, String type, String value, bool moreInfo) async {
+  Future<PaymentezResp> verify(String userId, String transactionId, String type,
+      String value, bool moreInfo) async {
     return await _paymentezRepositoryInterface.verify(
       userId: userId,
       transactionId: transactionId,
@@ -67,7 +70,8 @@ class Paymentez {
     );
   }
 
-  Future<PaymentezResp> debitToken(UserPay user, CardPay card, OrderPay orderPay) async {
+  Future<PaymentezResp> debitToken(
+      UserPay user, CardPay card, OrderPay orderPay) async {
     return await _paymentezRepositoryInterface.debitToken(
       user: user,
       card: card,
@@ -79,10 +83,10 @@ class Paymentez {
 class ConfigAuthorization {
   ConfigAuthorization({
     this.production = false,
-    @required this.appCode,
-    @required this.appClientKey,
-    @required this.appCodeSERVER,
-    @required this.appClientKeySERVER,
+    required this.appCode,
+    required this.appClientKey,
+    required this.appCodeSERVER,
+    required this.appClientKeySERVER,
     this.isLogServe = false,
     this.urlLogServe,
     this.headers,
@@ -94,10 +98,12 @@ class ConfigAuthorization {
   final String appCodeSERVER;
   final String appClientKeySERVER;
   final bool isLogServe;
-  final String urlLogServe;
-  final Map<String, String> headers;
+  final String? urlLogServe;
+  final Map<String, String>? headers;
 
   String getHost() {
-    return production ? "https://ccapi.paymentez.com" : "https://ccapi-stg.paymentez.com";
+    return production
+        ? "https://ccapi.paymentez.com"
+        : "https://ccapi-stg.paymentez.com";
   }
 }

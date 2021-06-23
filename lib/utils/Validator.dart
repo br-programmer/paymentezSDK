@@ -22,28 +22,34 @@ class ValidatorUtils {
 
   static String formatFech(DateTime now) {
     String day = (now.day < 10) ? "0" + now.day.toString() : now.day.toString();
-    String month = (now.month < 10) ? "0" + now.month.toString() : now.month.toString();
+    String month =
+        (now.month < 10) ? "0" + now.month.toString() : now.month.toString();
     String year = now.year.toString();
     String result = day + "/" + month + "/" + year;
     return result;
   }
 
   static String formatHour(DateTime now) {
-    String hour = (now.hour < 10) ? "0" + now.hour.toString() : now.hour.toString();
-    String minute = (now.minute < 10) ? "0" + now.minute.toString() : now.minute.toString();
-    String second = (now.second < 10) ? "0" + now.second.toString() : now.second.toString();
+    String hour =
+        (now.hour < 10) ? "0" + now.hour.toString() : now.hour.toString();
+    String minute =
+        (now.minute < 10) ? "0" + now.minute.toString() : now.minute.toString();
+    String second =
+        (now.second < 10) ? "0" + now.second.toString() : now.second.toString();
     String result = hour + ":" + minute + ":" + second;
     return result;
   }
 
   static bool isEmailPro(String string) {
-    RegExp regExp = new RegExp(r"^([a-zA-Z0-9._-]{2,})@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]{2,}\.)+[a-zA-Z]{2,}))$");
+    RegExp regExp = new RegExp(
+        r"^([a-zA-Z0-9._-]{2,})@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]{2,}\.)+[a-zA-Z]{2,}))$");
     bool matches = regExp.hasMatch(string);
     return matches;
   }
 
   static bool isPass(String string) {
-    RegExp regExp = RegExp(r"(?=\w*[0-9]{1,})(?=\w*[A-Z]{1,})(?=\w*[a-z]{1,})\S{8,15}");
+    RegExp regExp =
+        RegExp(r"(?=\w*[0-9]{1,})(?=\w*[A-Z]{1,})(?=\w*[a-z]{1,})\S{8,15}");
     bool estado = regExp.hasMatch(string);
     return estado;
   }
@@ -75,7 +81,8 @@ class ValidatorUtils {
       validarInicial(string, 10);
       validarCodigoProvincia(string.substring(0, 2));
       validarTercerDigito(string.substring(2, 3), TipoDocumento.cedula);
-      algoritmoModulo10(string.substring(0, 9), int.parse(string.substring(9, 10)));
+      algoritmoModulo10(
+          string.substring(0, 9), int.parse(string.substring(9, 10)));
     } catch (e) {
       print(e);
       return false;
@@ -89,7 +96,8 @@ class ValidatorUtils {
       validarCodigoProvincia(string.substring(0, 2));
       validarTercerDigito(string.substring(2, 3), TipoDocumento.rucNatural);
       validarCodigoEstablecimiento(string.substring(10, 13));
-      algoritmoModulo10(string.substring(0, 9), int.parse(string.substring(9, 10)));
+      algoritmoModulo10(
+          string.substring(0, 9), int.parse(string.substring(9, 10)));
     } catch (e) {
       print(e);
       return false;
@@ -109,7 +117,9 @@ class ValidatorUtils {
     }
 
     if (numero.length != caracteres) {
-      throw new Exception("Valor ingresado debe tener " + caracteres.toString() + " caracteres");
+      throw new Exception("Valor ingresado debe tener " +
+          caracteres.toString() +
+          " caracteres");
     }
 
     return true;
@@ -118,7 +128,8 @@ class ValidatorUtils {
   @protected
   static bool validarCodigoProvincia(String numero) {
     if (int.parse(numero) < 0 || int.parse(numero) > 24) {
-      throw new Exception("Codigo de Provincia (dos primeros dígitos) no deben ser mayor a 24 ni menores a 0");
+      throw new Exception(
+          "Codigo de Provincia (dos primeros dígitos) no deben ser mayor a 24 ni menores a 0");
     }
     return true;
   }
@@ -129,17 +140,20 @@ class ValidatorUtils {
       case TipoDocumento.cedula:
       case TipoDocumento.rucNatural:
         if (int.parse(numero) < 0 || int.parse(numero) > 5) {
-          throw new Exception("Tercer dígito debe ser mayor o igual a 0 y menor a 6 para cédulas y RUC de persona natural ... permitidos de 0 a 5");
+          throw new Exception(
+              "Tercer dígito debe ser mayor o igual a 0 y menor a 6 para cédulas y RUC de persona natural ... permitidos de 0 a 5");
         }
         break;
       case TipoDocumento.rucPrivada:
         if (int.parse(numero) != 9) {
-          throw new Exception("Tercer dígito debe ser igual a 9 para sociedades privadas");
+          throw new Exception(
+              "Tercer dígito debe ser igual a 9 para sociedades privadas");
         }
         break;
       case TipoDocumento.rucPublica:
         if (int.parse(numero) != 6) {
-          throw new Exception("Tercer dígito debe ser igual a 6 para sociedades públicas");
+          throw new Exception(
+              "Tercer dígito debe ser igual a 6 para sociedades públicas");
         }
         break;
       default:
@@ -158,8 +172,10 @@ class ValidatorUtils {
 
 // https://github.com/diaspar/validacion-cedula-ruc-ecuador/blob/master/validadores/php/ValidarIdentificacion.php
   @protected
-  static bool algoritmoModulo10(String digitosInicialesDAT, int digitoVerificador) {
-    List<int> arrayCoeficientes = new List<int>.from([2, 1, 2, 1, 2, 1, 2, 1, 2]);
+  static bool algoritmoModulo10(
+      String digitosInicialesDAT, int digitoVerificador) {
+    List<int> arrayCoeficientes =
+        new List<int>.from([2, 1, 2, 1, 2, 1, 2, 1, 2]);
     List<String> digitosIniciales = digitosInicialesDAT.split('').toList();
     int total = 0;
     for (var i = 0; i < digitosIniciales.length; i++) {
@@ -179,7 +195,8 @@ class ValidatorUtils {
       resultado = (10 - residuo);
     }
     if (resultado != digitoVerificador) {
-      throw new Exception("Dígitos iniciales no validan contra Dígito Idenficador");
+      throw new Exception(
+          "Dígitos iniciales no validan contra Dígito Idenficador");
     }
     return true;
   }

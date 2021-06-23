@@ -54,14 +54,17 @@ enum StatusRespPaymentez {
 }
 
 class PaymentezResp {
-  StatusResp status;
-  String message;
-  dynamic data;
+  const PaymentezResp({required this.status, required this.message, this.data});
 
-  PaymentezResp({this.status, this.message, this.data});
+  final StatusResp status;
+  final String message;
+  final dynamic data;
 
-  PaymentezResp.fromJson(dynamic dat) {
+  static PaymentezResp fromJson(dynamic dat) {
     Map<String, dynamic> map = json.decode(dat);
+    late StatusResp status;
+    late String message;
+    late dynamic data;
 
     if (map.containsKey('cards')) {
       List lista = map['cards'];
@@ -91,7 +94,7 @@ class PaymentezResp {
     if (map.containsKey('transaction') && map.containsKey('card')) {
       final transaction = Transaction.fromJson(map['transaction']);
       status = StatusResp.success;
-      message = transaction.statusDetailDescription;
+      message = transaction.statusDetailDescription!;
       data = [CardPay.fromJson(map['card']), transaction];
     }
 
@@ -120,7 +123,8 @@ class PaymentezResp {
 
       if (myStatus == StatusRespPaymentez.ValidationError) {
         status = StatusResp.conflict;
-        message = 'No coincide con: BY_AMOUNT, BY_AUTH_CODE, BY_OTP, BY_CRES, AUTHENTICATION_CONTINUE.';
+        message =
+            'No coincide con: BY_AMOUNT, BY_AUTH_CODE, BY_OTP, BY_CRES, AUTHENTICATION_CONTINUE.';
         data = null;
       }
 
@@ -132,7 +136,8 @@ class PaymentezResp {
 
       if (myStatus == StatusRespPaymentez.TransactionExceededApp) {
         status = StatusResp.conflict;
-        message = 'Se superó el número de transacciones mostradas para esta aplicación';
+        message =
+            'Se superó el número de transacciones mostradas para esta aplicación';
         data = null;
       }
 
@@ -148,15 +153,22 @@ class PaymentezResp {
         data = null;
       }
     }
+
+    return PaymentezResp(
+      status: status,
+      message: message,
+      data: data,
+    );
   }
 
-  StatusRespPaymentez _getStatusError(dynamic error) {
+  static StatusRespPaymentez _getStatusError(dynamic error) {
     String type = error['type'].toString().split(':')[0];
     String description = error['description'].toString();
     if (type == 'Card already added') {
       return StatusRespPaymentez.Card_already_added;
     }
-    if (type == 'OperationNotAllowedError' && description == 'Invalid date of validity') {
+    if (type == 'OperationNotAllowedError' &&
+        description == 'Invalid date of validity') {
       return StatusRespPaymentez.Invalid_date_of_validity;
     }
     if (type == 'Escribe un número válido de tarjeta.') {
@@ -177,7 +189,8 @@ class PaymentezResp {
       final newType = error['type'].toString();
       final jsonData = Map.from(json.decode(newType.replaceAll("'", '"')));
       if (jsonData.containsKey('code') && jsonData.containsKey('description')) {
-        if (jsonData['code'].toString() == '7' && jsonData['description'].toString() == 'VerificationError') {
+        if (jsonData['code'].toString() == '7' &&
+            jsonData['description'].toString() == 'VerificationError') {
           return StatusRespPaymentez.VerificationError;
         } else {
           return StatusRespPaymentez.Stranger;

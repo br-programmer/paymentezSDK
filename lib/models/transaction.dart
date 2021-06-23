@@ -1,17 +1,17 @@
 import 'package:paymentez/utils/paymentez_validate.dart';
 
 class Transaction {
-  String status;
-  String paymentDate;
-  double amount;
-  String authorizationCode;
-  int installments;
-  String devReference;
-  int statusDetail;
-  String carrierCode;
-  String message;
-  String id;
-  String statusDetailDescription;
+  String? status;
+  String? paymentDate;
+  double? amount;
+  String? authorizationCode;
+  int? installments;
+  String? devReference;
+  int? statusDetail;
+  String? carrierCode;
+  String? message;
+  String? id;
+  String? statusDetailDescription;
 
   Transaction.fromJson(dynamic dat) {
     status = dat['status'];
@@ -24,7 +24,9 @@ class Transaction {
     carrierCode = dat['carrier_code'];
     message = dat['message'];
     id = dat['id'];
-    statusDetailDescription = PaymentezValidate.geStatusDetailDescription(int.parse(dat['status_detail'].toString()));
+    statusDetailDescription = PaymentezValidate.geStatusDetailDescription(
+      int.parse(dat['status_detail'].toString()),
+    );
   }
 
   Map<String, dynamic> toJson() => {

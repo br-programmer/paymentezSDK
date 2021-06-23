@@ -11,19 +11,21 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
         configAuthorization.appCodeSERVER,
         configAuthorization.appClientKeySERVER,
       );
+      final uri = '${configAuthorization.getHost()}/v2/card/list?uid=$userId';
       final response = await http.get(
-        configAuthorization.getHost() + '/v2/card/list?uid=' + userId,
+        Uri.parse(uri),
         headers: {'Auth-Token': tokenAuth.toString()},
       );
-      print('************************************************> GetAllCards');
-      print(response.statusCode);
-      print(response.body);
+      debugPrint('Response getAllCard from Paymentez');
+      debugPrint(response.statusCode.toString());
+      debugPrint(response.body.toString());
       return _prepareReturn(
         response: response,
         userId: userId,
         nameFunction: 'GetAllCards',
       );
     } catch (e) {
+      debugPrint('Error g');
       if (configAuthorization.isLogServe) {
         _log(userId, 'GetAllCards', 500, e.toString());
       }
@@ -36,7 +38,8 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
   }
 
   @override
-  Future<PaymentezResp> delCard({String userId, String tokenCard}) async {
+  Future<PaymentezResp> delCard(
+      {required String userId, required String tokenCard}) async {
     try {
       String tokenAuth = PaymentezSecurity.getAuthToken(
         configAuthorization.appCodeSERVER,
@@ -46,8 +49,9 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
         'card': {'token': tokenCard},
         'user': {'id': userId}
       };
+      final uri = '${configAuthorization.getHost()}/v2/card/delete/';
       final response = await http.post(
-        configAuthorization.getHost() + '/v2/card/delete/',
+        Uri.parse(uri),
         headers: {'Auth-Token': tokenAuth.toString()},
         body: json.encode(dat),
       );
@@ -72,7 +76,11 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
   }
 
   @override
-  Future<PaymentezResp> addCard({UserPay user, CardPay card, String sessionId}) async {
+  Future<PaymentezResp> addCard({
+    required UserPay user,
+    required CardPay card,
+    required String sessionId,
+  }) async {
     try {
       String tokenAuth = PaymentezSecurity.getAuthToken(
         configAuthorization.appCode,
@@ -100,8 +108,9 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
           'hour': PaymentezSecurity.formatHour(DateTime.now()),
         }
       };
+      final uri = '${configAuthorization.getHost()}/v2/card/add';
       final response = await http.post(
-        configAuthorization.getHost() + '/v2/card/add',
+        Uri.parse(uri),
         headers: {'Auth-Token': tokenAuth.toString()},
         body: json.encode(dat),
       );
@@ -126,17 +135,21 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
   }
 
   @override
-  Future<PaymentezResp> infoTransaction({String userId, String transactionId}) async {
+  Future<PaymentezResp> infoTransaction(
+      {required String userId, required String transactionId}) async {
     try {
       String tokenAuth = PaymentezSecurity.getAuthToken(
         configAuthorization.appCodeSERVER,
         configAuthorization.appClientKeySERVER,
       );
+      final uri =
+          '${configAuthorization.getHost()}/v2/transaction/$transactionId';
       final response = await http.get(
-        configAuthorization.getHost() + '/v2/transaction/' + transactionId,
+        Uri.parse(uri),
         headers: {'Auth-Token': tokenAuth.toString()},
       );
-      print('************************************************> InfoTransaction');
+      print(
+          '************************************************> InfoTransaction');
       print(response.statusCode);
       print(response.body);
       return _prepareReturn(
@@ -157,7 +170,13 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
   }
 
   @override
-  Future<PaymentezResp> verify({String userId, String transactionId, String type, String value, bool moreInfo = true}) async {
+  Future<PaymentezResp> verify({
+    required String userId,
+    required String transactionId,
+    required String type,
+    required String value,
+    bool moreInfo = true,
+  }) async {
     try {
       String tokenAuth = PaymentezSecurity.getAuthToken(
         configAuthorization.appCodeSERVER,
@@ -170,8 +189,9 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
         'value': value,
         'more_info': moreInfo
       };
+      final uri = '${configAuthorization.getHost()}/v2/transaction/verify';
       final response = await http.post(
-        configAuthorization.getHost() + '/v2/transaction/verify',
+        Uri.parse(uri),
         headers: {'Auth-Token': tokenAuth.toString()},
         body: json.encode(dat),
       );
@@ -197,7 +217,11 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
   }
 
   @override
-  Future<PaymentezResp> debitToken({UserPay user, CardPay card, OrderPay orderPay}) async {
+  Future<PaymentezResp> debitToken({
+    required UserPay user,
+    required CardPay card,
+    required OrderPay orderPay,
+  }) async {
     try {
       String tokenAuth = PaymentezSecurity.getAuthToken(
         configAuthorization.appCodeSERVER,
@@ -211,14 +235,18 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
           "description": orderPay.description,
           "dev_reference": orderPay.devReference,
           "vat": orderPay.vat,
-          orderPay.installments == null ? "" : "installments": orderPay.installments,
-          orderPay.installmentsType == null ? "" : "installments_type": orderPay.installmentsType,
-          orderPay.taxableAmount == null ? "" : "taxable_amount": orderPay.taxableAmount,
-          "tax_percentage": orderPay.taxPercentage
+          orderPay.installments == null ? "" : "installments":
+              orderPay.installments,
+          orderPay.installmentsType == null ? "" : "installments_type":
+              orderPay.installmentsType,
+          orderPay.taxableAmount == null ? "" : "taxable_amount":
+              orderPay.taxableAmount,
+          'tax_percentage': orderPay.taxPercentage
         },
       };
+      final uri = '${configAuthorization.getHost()}/v2/transaction/debit/';
       final response = await http.post(
-        configAuthorization.getHost() + "/v2/transaction/debit/",
+        Uri.parse(uri),
         headers: {'Auth-Token': tokenAuth.toString()},
         body: json.encode(dat),
       );
@@ -243,7 +271,11 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
   }
 
   //=================================================
-  PaymentezResp _prepareReturn({@required http.Response response, @required String userId, @required String nameFunction}) {
+  PaymentezResp _prepareReturn({
+    required http.Response response,
+    required String userId,
+    required String nameFunction,
+  }) {
     if (response.statusCode == 200) {
       if (configAuthorization.isLogServe) {
         _log(userId, nameFunction, 200, response.body);
@@ -251,7 +283,9 @@ class _PaymentezServices extends PaymentezRepositoryInterface {
       return PaymentezResp.fromJson(response.body);
     }
 
-    if (response.statusCode == 400 || response.statusCode == 401 || response.statusCode == 403) {
+    if (response.statusCode == 400 ||
+        response.statusCode == 401 ||
+        response.statusCode == 403) {
       if (configAuthorization.isLogServe) {
         _log(userId, nameFunction, response.statusCode, response.body);
       }

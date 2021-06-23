@@ -46,10 +46,11 @@ class PaymentezValidate {
   /// para obtener informacion respecto a la tarjeta se debe colocar los
   /// 6 primeros digitos de la tarjeta caso contrario retorna null
   static CardInfo getCarInfo(String numCardLenth6) {
-    CardInfo cardInfo;
+    CardInfo? cardInfo;
     String name = _NO_SUPPORT;
     if (numCardLenth6.length < 6) {
-      throw Exception('PaymentezValidate.getCarInfo, ERROR: numCardLenth6 debe contener 6 caracteres');
+      throw Exception(
+          'PaymentezValidate.getCarInfo, ERROR: numCardLenth6 debe contener 6 caracteres');
     }
     OUTER:
     for (var i = 0; i < _typesCardsCodes.keys.length; i++) {
@@ -77,7 +78,8 @@ class PaymentezValidate {
             }
           }
         } else {
-          String digitos = numCardLenth6.substring(0, cardCode.toString().length);
+          String digitos =
+              numCardLenth6.substring(0, cardCode.toString().length);
           if (digitos == cardCode.toString()) {
             cardInfo = CardInfo(
               type: name,
@@ -233,7 +235,8 @@ class PaymentezValidate {
         txt2 = txt1[i] + txt2;
       }
     }
-    return MaskedTextInputFormatter.applyFormat(txt2, mask: spacingPatterns, separator: " ", force: true);
+    return MaskedTextInputFormatter.applyFormat(txt2,
+        mask: spacingPatterns, separator: " ", force: true);
   }
 
   /// Obtiene el codigo de detalle para las transacciones puede encontrar mas informacion de los codigos en:
@@ -244,117 +247,103 @@ class PaymentezValidate {
     switch (statusDetail) {
       case 0:
         return 'A la espera del pago';
-        break;
       case 1:
         return 'Se requiere verificación, consulte la sección Verificación';
-        break;
       case 3:
         return 'Pagado';
-        break;
       case 6:
         return 'Fraude';
-        break;
       case 7:
         return 'Reembolso';
-        break;
       case 8:
         return 'Contracargo';
-        break;
       case 9:
         return 'Rechazado por el transportista';
-        break;
       case 10:
         return 'Error del sistema';
-        break;
       case 11:
         return 'Fraude de Paymentez';
-        break;
       case 12:
         return 'Lista negra de Paymentez';
-        break;
       case 13:
         return 'Tolerancia al tiempo';
-        break;
       case 14:
         return 'Caducado por Paymentez';
-        break;
       case 19:
         return 'Código de autorización no válido';
-        break;
       case 20:
         return 'El código de autorización venció';
-        break;
       case 21:
         return 'Fraude de Paymentez - Reembolso pendiente';
-        break;
       case 22:
         return 'AuthCode no válido: reembolso pendiente';
-        break;
       case 23:
         return 'AuthCode caducado: reembolso pendiente';
-        break;
       case 24:
         return 'Fraude de Paymentez - Reembolso solicitado';
-        break;
       case 25:
         return 'AuthCode no válido: reembolso solicitado';
-        break;
       case 26:
         return 'AuthCode expired - Reembolso solicitado';
-        break;
       case 27:
         return 'Comerciante: reembolso pendiente';
-        break;
       case 28:
         return 'Comerciante: reembolso solicitado';
-        break;
       case 29:
         return 'Anulado';
-        break;
       case 30:
         return 'Transacción sentado (solo Ecuador)';
-        break;
       case 31:
         return 'Esperando OTP';
-        break;
       case 32:
         return 'OTP validado con éxito';
-        break;
       case 33:
         return 'OTP no validado';
-        break;
       case 34:
         return 'Reembolso parcial';
-        break;
       case 35:
         return 'Se solicitó el método 3DS, esperando continuar';
-        break;
       case 36:
         return 'Desafío 3DS solicitado, esperando CRES';
-        break;
       case 37:
         return 'Rechazado por 3DS';
-        break;
       default:
         return "NO RECONOCIDO";
-        break;
     }
   }
 
   static List<dynamic> getInstallmentsType() {
     return [
       {"Type": 0, "Description": "Crédito Rotativo."},
-      {"Type": 1, "Description": "Rotativo y diferido sin intereses (el banco pagará al comercio la cuota, mes a mes)."},
+      {
+        "Type": 1,
+        "Description":
+            "Rotativo y diferido sin intereses (el banco pagará al comercio la cuota, mes a mes)."
+      },
       {"Type": 2, "Description": "Diferido con intereses."},
       {"Type": 3, "Description": "Diferido sin intereses."},
       {"Type": 7, "Description": "Diferido con intereses y meses de gracia."},
       {"Type": 6, "Description": "Diferido sin intereses pago mes a mes. (*)"},
       {"Type": 9, "Description": "Diferido sin intereses y meses de gracia."},
-      {"Type": 10, "Description": "Diferido sin intereses promoción bimensual. (*)"},
-      {"Type": 21, "Description": "Exclusivo para Diners Club, diferido con y sin intereses."},
-      {"Type": 22, "Description": "Exclusivo para Diners Club, diferido con y sin intereses."},
+      {
+        "Type": 10,
+        "Description": "Diferido sin intereses promoción bimensual. (*)"
+      },
+      {
+        "Type": 21,
+        "Description":
+            "Exclusivo para Diners Club, diferido con y sin intereses."
+      },
+      {
+        "Type": 22,
+        "Description":
+            "Exclusivo para Diners Club, diferido con y sin intereses."
+      },
       {"Type": 30, "Description": "Diferido con intereses pago mes a mes. (*)"},
-      {"Type": 50, "Description": "Diferido sin intereses promociones (Supermaxi). (*)"},
+      {
+        "Type": 50,
+        "Description": "Diferido sin intereses promociones (Supermaxi). (*)"
+      },
       {"Type": 51, "Description": "Diferido con intereses (Cuota fácil). (*)"},
       {"Type": 52, "Description": "Sin intereses (Rendecion Produmillas). (*)"},
       {"Type": 53, "Description": "Sin intereses venta con promociones. (*)"},
@@ -363,7 +352,10 @@ class PaymentezValidate {
       {"Type": 73, "Description": "Crédito Especial sin intereses (smax). (*)"},
       {"Type": 74, "Description": "Prepago sin intereses (smax). (*)"},
       {"Type": 75, "Description": "Crédito diferido sin intereses (smax). (*)"},
-      {"Type": 90, "Description": "Sin intereses con meses de gracia (Supermaxi). (*)"},
+      {
+        "Type": 90,
+        "Description": "Sin intereses con meses de gracia (Supermaxi). (*)"
+      },
     ];
   }
 }

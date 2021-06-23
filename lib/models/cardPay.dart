@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:paymentez/utils/paymentez_validate.dart';
 
-enum TypeCard { none, NoSupport, Visa, Mastercard, AmericanExpress, Dinners, Discover, Maestro, Credisensa, Solidario, UnionPay }
+enum TypeCard {
+  none,
+  NoSupport,
+  Visa,
+  Mastercard,
+  AmericanExpress,
+  Dinners,
+  Discover,
+  Maestro,
+  Credisensa,
+  Solidario,
+  UnionPay
+}
 
 class CardPay {
   /// propertys Paymentez
-  String bin;
-  String status;
-  String token;
-  String holderName;
-  int expiryMonth;
-  int expiryYear;
-  String transactionReference;
-  String type;
-  String number;
-  String origin;
+  String? bin;
+  String? status;
+  String? token;
+  String? holderName;
+  int? expiryMonth;
+  int? expiryYear;
+  String? transactionReference;
+  String? type;
+  String? number;
+  String? origin;
 
   /// propertys View
-  CardInfo cardInfo;
+  CardInfo? cardInfo;
 
   /// for use model
-  String cvc;
-  String statusEs;
-  String message;
+  String? cvc;
+  String? statusEs;
+  String? message;
 
   CardPay({
     this.bin,
@@ -58,10 +70,9 @@ class CardPay {
   }
 
   List<CardPay> getList(dynamic cards) {
-    List listCards;
-    for (var item in cards) {
-      final itemCard = CardPay.fromJson(item);
-      listCards.add(itemCard);
+    List<CardPay> listCards = <CardPay>[];
+    for (final card in cards) {
+      listCards.add(CardPay.fromJson(card));
     }
     return listCards;
   }
@@ -70,22 +81,16 @@ class CardPay {
     switch (status) {
       case 'valid':
         return 'Aprobada';
-        break;
       case 'review':
         return 'En revisión';
-        break;
       case 'rejected':
         return 'Rechazada';
-        break;
       case 'pending':
         return 'Pendiente';
-        break;
       case 'WAITING_OTP':
         return 'Pendiente de validar por OPT';
-        break;
       default:
         return 'otra $status';
-        break;
     }
   }
 
@@ -99,7 +104,7 @@ class CardPay {
         'type': type,
         'number': number,
         'origin': origin,
-        'cardInfo': cardInfo.toJson(),
+        'cardInfo': cardInfo!.toJson(),
         'cvc': cvc,
         'statusEs': statusEs,
         'message': message,
@@ -107,14 +112,6 @@ class CardPay {
 }
 
 class CardInfo {
-  String type;
-  TypeCard typeCard;
-  String fullName;
-  String spacingPatterns;
-  int cvvLength;
-  String icon;
-  Color color;
-  String numCardFormated;
   CardInfo({
     this.type,
     this.typeCard,
@@ -126,15 +123,28 @@ class CardInfo {
     this.numCardFormated,
   });
 
+  String? type;
+  TypeCard? typeCard;
+  String? fullName;
+  String? spacingPatterns;
+  int? cvvLength;
+  String? icon;
+  Color? color;
+  String? numCardFormated;
+
   CardInfo.toModel(dynamic dat) {
     type = dat['type'].toString();
     typeCard = PaymentezValidate.getTypeCard(dat['type'].toString());
     fullName = PaymentezValidate.getFullNameTypeCard(dat['type'].toString());
-    spacingPatterns = PaymentezValidate.getSpacingPatternsCard(dat['type'].toString());
+    spacingPatterns =
+        PaymentezValidate.getSpacingPatternsCard(dat['type'].toString());
     cvvLength = PaymentezValidate.getCVVlenngth(dat['type'].toString());
     icon = PaymentezValidate.getIconCard(dat['type'].toString());
     color = PaymentezValidate.getColorCard(dat['type'].toString());
-    numCardFormated = PaymentezValidate.getNumCardFormated(dat['type'].toString(), dat['bin'].toString(), dat['number'].toString());
+    numCardFormated = PaymentezValidate.getNumCardFormated(
+        dat['type'].toString(),
+        dat['bin'].toString(),
+        dat['number'].toString());
   }
 
   Map<String, dynamic> toJson() => {
